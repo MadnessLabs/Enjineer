@@ -2,7 +2,7 @@ import { Component, ComponentInterface, Element, Prop, h } from "@stencil/core";
 
 @Component({
   tag: "app-header",
-  styleUrl: "app-header.css"
+  styleUrl: "app-header.css",
 })
 export class AppHeader implements ComponentInterface {
   ionMenu: HTMLIonMenuElement;
@@ -34,17 +34,7 @@ export class AppHeader implements ComponentInterface {
       <ion-header>
         <ion-toolbar>
           <ion-buttons slot="start">
-            {this.hasStartSlot ? (
-              <slot name="start" />
-            ) : (
-              <ion-button
-                fill="clear"
-                class="menu-button"
-                onClick={(event: UIEvent) => this.toggleMenu(event)}
-              >
-                <ion-icon name="menu" />
-              </ion-button>
-            )}
+            {this.hasStartSlot ? <slot name="start" /> : null}
           </ion-buttons>
           <ion-title>
             {this.hasTitleSlot ? (
@@ -57,7 +47,7 @@ export class AppHeader implements ComponentInterface {
           </ion-title>
           <ion-buttons
             class={{
-              "custom-buttons": this.hasEndSlot
+              "custom-buttons": this.hasEndSlot,
             }}
             slot="end"
           >

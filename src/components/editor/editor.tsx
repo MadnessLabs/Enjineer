@@ -7,7 +7,7 @@ import DragDrop from "editorjs-drag-drop";
 import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import Table from "@editorjs/table";
-import Test from "./blocks/test";
+import Button from "./blocks/Button";
 
 @Component({
   tag: "enjineer-editor",
@@ -22,7 +22,9 @@ export class EnjineerEditor implements ComponentInterface {
         new DragDrop(this.editorJS);
       },
       tools: {
-        test: Test,
+        button: {
+          class: Button,
+        },
         table: {
           class: Table,
         },

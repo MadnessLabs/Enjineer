@@ -1,16 +1,10 @@
-import {
-  Component,
-  ComponentInterface,
-  h,
-  Prop,
-  State
-} from "@stencil/core";
+import { Component, ComponentInterface, h, Prop, State } from "@stencil/core";
 
 import { AuthService } from "../../helpers/auth";
 
 @Component({
   tag: "app-editor",
-  styleUrl: "app-editor.css"
+  styleUrl: "app-editor.css",
 })
 export class AppEditor implements ComponentInterface {
   @Prop() auth: AuthService;
@@ -20,10 +14,10 @@ export class AppEditor implements ComponentInterface {
 
   render() {
     return [
-      <app-header pageTitle="Editor"></app-header>,
+      <app-header pageTitle="Enjineer"></app-header>,
       <ion-content class="ion-padding">
         <enjineer-editor />
-      </ion-content>
+      </ion-content>,
     ];
   }
 }
