@@ -4,7 +4,7 @@ import {
   Prop,
   State,
   h,
-  Build
+  Build,
 } from "@stencil/core";
 
 import { AuthService } from "../../helpers/auth";
@@ -12,7 +12,7 @@ import { DatabaseService } from "../../helpers/database";
 
 @Component({
   tag: "app-profile",
-  styleUrl: "app-profile.css"
+  styleUrl: "app-profile.css",
 })
 export class AppProfile implements ComponentInterface {
   @Prop() auth: AuthService;
@@ -48,9 +48,7 @@ export class AppProfile implements ComponentInterface {
           <ion-icon slot="end" name="power" />
         </ion-button>
       </app-header>,
-      <ion-content class="ion-padding">
-        Your Profile
-      </ion-content>
+      <ion-content class="ion-padding">Your Profile</ion-content>,
     ];
   }
 }

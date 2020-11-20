@@ -32,8 +32,8 @@ export class AuthService {
     authLocalStorageKey: "enjin:session",
     tokenLocalStorageKey: "enjin:token",
     facebook: {
-      permissions: ["email", "public_profile", "user_friends"]
-    }
+      permissions: ["email", "public_profile", "user_friends"],
+    },
   };
   session: any;
   private facebook: any = Facebook;
@@ -105,7 +105,7 @@ export class AuthService {
             size: "invisible",
             callback(response) {
               resolve(response);
-            }
+            },
           }
         );
       } catch (error) {
@@ -144,7 +144,7 @@ export class AuthService {
   }
 
   onAuthChanged(callback) {
-    firebase.auth().onAuthStateChanged(async session => {
+    firebase.auth().onAuthStateChanged(async (session) => {
       if (
         !session ||
         (!session.emailVerified &&
@@ -214,10 +214,10 @@ export class AuthService {
         firebase
           .auth()
           .createUserWithEmailAndPassword(email, password)
-          .then(data => {
+          .then((data) => {
             resolve(data);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       } catch (e) {
@@ -244,11 +244,11 @@ export class AuthService {
         firebase
           .auth()
           .signInWithEmailAndPassword(email, password)
-          .then(user => {
+          .then((user) => {
             this.emitLoggedInEvent({ user });
             resolve({ data: { user } });
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       } catch (e) {
@@ -264,11 +264,11 @@ export class AuthService {
       try {
         currentUser
           .updateEmail(newEmail)
-          .then(user => {
+          .then((user) => {
             resolve({ data: { user } });
             this.sendEmailVerification(actionOptions);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       } catch (e) {
@@ -325,7 +325,7 @@ export class AuthService {
               this.emitLoggedInEvent(result);
               resolve(result);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
               reject(error);
             });
@@ -335,17 +335,17 @@ export class AuthService {
               this.emitLoggedInEvent(result);
               resolve(result);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
               reject(error);
             });
         } else if (network === "twitter") {
           this.twitterNative()
-            .then(result => {
+            .then((result) => {
               this.emitLoggedInEvent(result);
               resolve(result);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(error);
               reject(error);
             });
@@ -355,23 +355,25 @@ export class AuthService {
           provider = new firebase.auth.FacebookAuthProvider();
         } else if (network === "google") {
           provider = new firebase.auth.GoogleAuthProvider();
+        } else if (network === "github") {
+          provider = new firebase.auth.GithubAuthProvider();
         } else if (network === "twitter") {
           provider = new firebase.auth.TwitterAuthProvider();
         } else {
           reject({
             message:
-              "A social network is required or the one provided is not yet supported."
+              "A social network is required or the one provided is not yet supported.",
           });
         }
         const authService: any = firebase.auth();
         authService[shouldRedirect ? "signInWithRedirect" : "signInWithPopup"](
           provider
         )
-          .then(data => {
+          .then((data) => {
             this.emitLoggedInEvent(data);
             resolve(data);
           })
-          .catch(error => {
+          .catch((error) => {
             reject(error);
           });
       }

@@ -16,9 +16,10 @@ const onBeforeLeave = async () => {
 
 @Component({
   tag: "app-root",
-  styleUrl: "app-root.css"
+  styleUrl: "app-root.css",
 })
 export class AppRoot implements ComponentInterface {
+  stopLoader = true;
   sharePopover: HTMLIonPopoverElement;
   routerEl: HTMLIonRouterElement;
   config = env();
@@ -26,7 +27,7 @@ export class AppRoot implements ComponentInterface {
   modal: HTMLIonModalElement;
   auth = Build.isBrowser
     ? new AuthService({
-        ...this.config
+        ...this.config,
       })
     : null;
   db = new DatabaseService();
@@ -38,60 +39,38 @@ export class AppRoot implements ComponentInterface {
   } = {
     auth: this.auth,
     config: this.config,
-    db: this.db
+    db: this.db,
   };
 
   @Listen("ionRouteDidChange")
-  onRouteDidChange(event) {
-    let stopLoader = true;
+  onRouteDidChange() {
     if (!Build.isBrowser) {
       return false;
     }
-    try {
-      const session = this.auth.isLoggedIn();
-      if (session && ["/"].indexOf(event.detail.to) >= 0) {
-        stopLoader = false;
-        this.routerEl.push("/dashboard");
-      }
-      if (!session && ["/dashboard"].indexOf(event.detail.to) >= 0) {
-        stopLoader = false;
-        this.routerEl.push("/");
-      }
-    } catch (err) {
-      console.log(err.message);
-    }
 
-    if (stopLoader) {
+    if (this.stopLoader) {
       document.querySelector("app-root").classList.add("is-loaded");
+      this.stopLoader = false;
     }
   }
 
   async componentWillLoad() {
     if (Build.isBrowser) {
-      // const FireEnjinLib = await (window as any).FireEnjin.init({
-      //   host: this.config.graphql.url,
-      //   token: await this.auth.getToken(),
-      //   functionsHost: this.config.functions.url,
-      //   onError: err => {
-      //     console.log(err);
-      //   }
-      // });
-      // this.defaultProps.client = FireEnjinLib.client;
-      // this.defaultProps.sdk = FireEnjinLib.sdk;
-
       this.session = this.auth.isLoggedIn();
       this.auth.onAuthChanged((session: firebase.default.User) => {
         if (session && session.uid) {
-          // (window as any).FireEnjin.setHeader(
-          //   "Authorization",
-          //   `Bearer ${(session as any)._lat}`
-          // );
           this.session = session;
-          this.db.watchDocument("users", session.uid, async snapshot => {
-            if (!snapshot.data.isRegistered && !this.modal) {
-              if (location.pathname !== "/dashboard") {
-                await this.routerEl.push("/dashboard");
-              }
+          console.log(session);
+          this.db.watchDocument("users", session.uid, async (snapshot) => {
+            if (!snapshot?.data) {
+              await this.db.document("users", session.uid).set({
+                id: session.uid,
+                isRegistered: true,
+                email: session.email,
+                displayName: session.displayName,
+                photo: session.photoURL,
+                phone: session.phoneNumber,
+              });
             }
           });
         }
@@ -102,47 +81,54 @@ export class AppRoot implements ComponentInterface {
   render() {
     return (
       <ion-app>
-          <ion-router
-            ref={el => (this.routerEl = el)}
-            useHash={
-              this.isCordova &&
-              (window as any).Ionic.platforms.indexOf("android") === -1
-            }
-          >
-            {this.isCordova && <ion-route-redirect from="/" to="/login" />}
-            {this.isCordova && (
-              <ion-route-redirect from="/index.html" to="/login" />
-            )}
-            <ion-route
-              url="/"
-              component="app-editor"
-              componentProps={this.defaultProps}
-              beforeLeave={onBeforeLeave}
-              beforeEnter={onBeforeEnter}
-            />
-            <ion-route
-              url="/login"
-              component="app-login"
-              componentProps={this.defaultProps}
-              beforeLeave={onBeforeLeave}
-              beforeEnter={onBeforeEnter}
-            />
-            <ion-route
-              url="/dashboard"
-              component="app-dashboard"
-              componentProps={this.defaultProps}
-              beforeLeave={onBeforeLeave}
-              beforeEnter={onBeforeEnter}
-            />
-            <ion-route
-              url="/profile"
-              component="app-profile"
-              componentProps={this.defaultProps}
-              beforeLeave={onBeforeLeave}
-              beforeEnter={onBeforeEnter}
-            />
-          </ion-router>
-          <ion-nav id="app-content" />
+        <ion-router
+          ref={(el) => (this.routerEl = el)}
+          useHash={
+            this.isCordova &&
+            (window as any).Ionic.platforms.indexOf("android") === -1
+          }
+        >
+          {this.isCordova && <ion-route-redirect from="/" to="/login" />}
+          {this.isCordova && (
+            <ion-route-redirect from="/index.html" to="/login" />
+          )}
+          <ion-route
+            url="/"
+            component="app-editor"
+            componentProps={this.defaultProps}
+            beforeLeave={onBeforeLeave}
+            beforeEnter={onBeforeEnter}
+          />
+          <ion-route
+            url="/editor"
+            component="app-editor"
+            componentProps={this.defaultProps}
+            beforeLeave={onBeforeLeave}
+            beforeEnter={onBeforeEnter}
+          />
+          <ion-route
+            url="/login"
+            component="app-login"
+            componentProps={this.defaultProps}
+            beforeLeave={onBeforeLeave}
+            beforeEnter={onBeforeEnter}
+          />
+          <ion-route
+            url="/dashboard"
+            component="app-dashboard"
+            componentProps={this.defaultProps}
+            beforeLeave={onBeforeLeave}
+            beforeEnter={onBeforeEnter}
+          />
+          <ion-route
+            url="/profile"
+            component="app-profile"
+            componentProps={this.defaultProps}
+            beforeLeave={onBeforeLeave}
+            beforeEnter={onBeforeEnter}
+          />
+        </ion-router>
+        <ion-nav id="app-content" />
       </ion-app>
     );
   }
