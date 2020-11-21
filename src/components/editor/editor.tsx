@@ -5,6 +5,7 @@ import {
   EventEmitter,
   h,
   Prop,
+  Method,
 } from "@stencil/core";
 import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
@@ -26,6 +27,11 @@ export class EnjineerEditor implements ComponentInterface {
   @Prop() placeholder = "Let's Write Something!";
 
   @Event() enjinChange: EventEmitter;
+
+  @Method()
+  async getInstance(): Promise<any> {
+    return this.editorJS;
+  }
 
   componentDidLoad() {
     this.editorJS = new EditorJS({

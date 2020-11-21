@@ -15,6 +15,7 @@ export namespace Components {
     interface AppEditor {
         "auth": AuthService;
         "config": any;
+        "db": DatabaseService;
     }
     interface AppHeader {
         "pageTitle": string;
@@ -30,6 +31,7 @@ export namespace Components {
     interface AppRoot {
     }
     interface EnjineerEditor {
+        "getInstance": () => Promise<any>;
         "placeholder": string;
     }
 }
@@ -94,6 +96,7 @@ declare namespace LocalJSX {
     interface AppEditor {
         "auth"?: AuthService;
         "config"?: any;
+        "db"?: DatabaseService;
     }
     interface AppHeader {
         "pageTitle"?: string;
