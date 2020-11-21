@@ -4,6 +4,7 @@ import {
   Event,
   EventEmitter,
   h,
+  Prop,
 } from "@stencil/core";
 import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
@@ -22,6 +23,8 @@ import Button from "./blocks/Button";
 export class EnjineerEditor implements ComponentInterface {
   editorJS: EditorJS;
 
+  @Prop() placeholder = "Let's Write Something!";
+
   @Event() enjinChange: EventEmitter;
 
   componentDidLoad() {
@@ -32,6 +35,7 @@ export class EnjineerEditor implements ComponentInterface {
       onChange: () => {
         this.enjinChange.emit({ instance: this.editorJS });
       },
+      placeholder: this.placeholder,
       tools: {
         button: {
           class: Button,

@@ -30,6 +30,7 @@ export namespace Components {
     interface AppRoot {
     }
     interface EnjineerEditor {
+        "placeholder": string;
     }
 }
 declare global {
@@ -109,6 +110,7 @@ declare namespace LocalJSX {
     }
     interface EnjineerEditor {
         "onEnjinChange"?: (event: CustomEvent<any>) => void;
+        "placeholder"?: string;
     }
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
