@@ -108,6 +108,7 @@ declare namespace LocalJSX {
     interface AppRoot {
     }
     interface EnjineerEditor {
+        "onEnjinChange"?: (event: CustomEvent<any>) => void;
     }
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;

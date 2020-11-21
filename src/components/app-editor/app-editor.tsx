@@ -18,10 +18,7 @@ export class AppEditor implements ComponentInterface {
   }
 
   openProfile() {
-    const routerEl = document.querySelector("ion-router");
-    if (routerEl) {
-      routerEl.push("/profile");
-    }
+    window.location.href = "/profile";
   }
 
   render() {

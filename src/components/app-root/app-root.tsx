@@ -4,16 +4,6 @@ import env from "../../helpers/env";
 import { AuthService } from "../../helpers/auth";
 import { DatabaseService } from "../../helpers/database";
 
-const onBeforeEnter = async () => {
-  console.log("before enter");
-  return true;
-};
-
-const onBeforeLeave = async () => {
-  console.log("before leave");
-  return true;
-};
-
 @Component({
   tag: "app-root",
   styleUrl: "app-root.css",
@@ -52,6 +42,8 @@ export class AppRoot implements ComponentInterface {
       document.querySelector("app-root").classList.add("is-loaded");
       this.stopLoader = false;
     }
+
+    return true;
   }
 
   async componentWillLoad() {
@@ -60,7 +52,6 @@ export class AppRoot implements ComponentInterface {
       this.auth.onAuthChanged((session: firebase.default.User) => {
         if (session && session.uid) {
           this.session = session;
-          console.log(session);
           this.db.watchDocument("users", session.uid, async (snapshot) => {
             if (!snapshot?.data) {
               await this.db.document("users", session.uid).set({
@@ -96,36 +87,26 @@ export class AppRoot implements ComponentInterface {
             url="/"
             component="app-editor"
             componentProps={this.defaultProps}
-            beforeLeave={onBeforeLeave}
-            beforeEnter={onBeforeEnter}
           />
           <ion-route
             url="/editor"
             component="app-editor"
             componentProps={this.defaultProps}
-            beforeLeave={onBeforeLeave}
-            beforeEnter={onBeforeEnter}
           />
           <ion-route
             url="/login"
             component="app-login"
             componentProps={this.defaultProps}
-            beforeLeave={onBeforeLeave}
-            beforeEnter={onBeforeEnter}
           />
           <ion-route
             url="/dashboard"
             component="app-dashboard"
             componentProps={this.defaultProps}
-            beforeLeave={onBeforeLeave}
-            beforeEnter={onBeforeEnter}
           />
           <ion-route
             url="/profile"
             component="app-profile"
             componentProps={this.defaultProps}
-            beforeLeave={onBeforeLeave}
-            beforeEnter={onBeforeEnter}
           />
         </ion-router>
         <ion-nav id="app-content" />

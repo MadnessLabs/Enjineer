@@ -1,4 +1,10 @@
-import { ComponentInterface, Component, h } from "@stencil/core";
+import {
+  ComponentInterface,
+  Component,
+  Event,
+  EventEmitter,
+  h,
+} from "@stencil/core";
 import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
 import List from "@editorjs/list";
@@ -16,10 +22,15 @@ import Button from "./blocks/Button";
 export class EnjineerEditor implements ComponentInterface {
   editorJS: EditorJS;
 
+  @Event() enjinChange: EventEmitter;
+
   componentDidLoad() {
     this.editorJS = new EditorJS({
       onReady: () => {
         new DragDrop(this.editorJS);
+      },
+      onChange: () => {
+        this.enjinChange.emit({ instance: this.editorJS });
       },
       tools: {
         button: {
