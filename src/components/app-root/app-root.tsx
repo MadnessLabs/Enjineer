@@ -85,7 +85,7 @@ export class AppRoot implements ComponentInterface {
           )}
           <ion-route
             url="/"
-            component="app-editor"
+            component="app-login"
             componentProps={this.defaultProps}
           />
           <ion-route
