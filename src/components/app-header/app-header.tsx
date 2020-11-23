@@ -31,10 +31,16 @@ export class AppHeader implements ComponentInterface {
 
   render() {
     return (
-      <ion-header>
+      <ion-header translucent>
         <ion-toolbar>
           <ion-buttons slot="start">
-            {this.hasStartSlot ? <slot name="start" /> : null}
+            {this.hasStartSlot ? (
+              <slot name="start" />
+            ) : (
+              <ion-fab-button>
+                <ion-icon color="dark" src="/assets/icon/icon.svg" />
+              </ion-fab-button>
+            )}
           </ion-buttons>
           <ion-title>
             {this.hasTitleSlot ? (

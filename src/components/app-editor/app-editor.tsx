@@ -67,8 +67,10 @@ export class AppEditor implements ComponentInterface {
                 height: "50px",
                 width: "50px",
                 position: "absolute",
-                top: "-8px",
-                right: "8px",
+                top: "3px",
+                right: "15px",
+                boxShadow:
+                  "0 1px 3px -1px rgba(0, 0, 0, 0.2), 0 3px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12)",
               }}
             />
           </ion-avatar>
