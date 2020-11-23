@@ -20,16 +20,23 @@ export class AppEditor implements ComponentInterface {
   @Prop() auth: AuthService;
   @Prop() config: any = {};
   @Prop() db: DatabaseService;
+  @Prop() pageId: string;
 
   @State() error: string;
   @State() session: firebase.default.User;
+  @State() page: any;
 
   @Listen("enjinChange")
   async onEditorChange(event) {
-    if (this.session) {
-      const currentEditor = await event.detail.instance.save();
+    if (!this.session) return;
+    const currentEditor = await event.detail.instance.save();
+    if (this.pageId === "home") {
       await this.db.document("users", this.session.uid).update({
         currentEditor,
+      });
+    } else {
+      await this.db.document("pages", this.pageId).update({
+        editor: currentEditor,
       });
     }
   }
@@ -39,12 +46,18 @@ export class AppEditor implements ComponentInterface {
     if (this.session) {
       setTimeout(async () => {
         const editorJS = await this.editorEl.getInstance();
-        const userData = await this.db.find("users", this.session.uid);
-        if (editorJS?.blocks?.render && userData?.id) {
-          console.log(userData.currentEditor);
-          editorJS.blocks.render(
-            userData.currentEditor ? userData.currentEditor : {}
-          );
+        if (this.pageId === "home") {
+          const userData = await this.db.find("users", this.session.uid);
+          if (editorJS?.blocks?.render && userData?.id) {
+            editorJS.blocks.render(
+              userData.currentEditor ? userData.currentEditor : {}
+            );
+          }
+        } else {
+          if (editorJS?.blocks?.render) {
+            this.page = await this.db.find("pages", this.pageId);
+            editorJS.blocks.render(this.page.editor ? this.page.editor : {});
+          }
         }
       }, 1000);
     }
@@ -56,7 +69,10 @@ export class AppEditor implements ComponentInterface {
 
   render() {
     return [
-      <app-header pageTitle="Enjineer">
+      <app-header
+        editable
+        pageTitle={this.page?.name ? this.page.name : "Enjineer"}
+      >
         {this.session ? (
           <ion-avatar slot="end">
             <img

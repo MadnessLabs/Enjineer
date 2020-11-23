@@ -1,32 +1,33 @@
-import { Component, ComponentInterface, Element, Prop, h } from "@stencil/core";
+import {
+  Component,
+  ComponentInterface,
+  Element,
+  Event,
+  EventEmitter,
+  Prop,
+  h,
+} from "@stencil/core";
 
 @Component({
   tag: "app-header",
   styleUrl: "app-header.css",
 })
 export class AppHeader implements ComponentInterface {
-  ionMenu: HTMLIonMenuElement;
   hasTitleSlot: boolean;
   hasEndSlot: boolean;
   hasStartSlot: boolean;
 
   @Element() hostElement: HTMLElement;
 
+  @Event() enjinToggleMenu: EventEmitter;
+
   @Prop() pageTitle: string;
+  @Prop() editable = false;
 
   componentWillLoad() {
     this.hasEndSlot = !!this.hostElement.querySelector('[slot="end"]');
     this.hasStartSlot = !!this.hostElement.querySelector('[slot="start"]');
     this.hasTitleSlot = !!this.hostElement.querySelector('[slot="title"]');
-  }
-
-  componentDidLoad() {
-    this.ionMenu = document.querySelector("ion-menu");
-  }
-
-  toggleMenu(event: UIEvent) {
-    event.preventDefault();
-    this.ionMenu.toggle();
   }
 
   render() {
@@ -37,12 +38,14 @@ export class AppHeader implements ComponentInterface {
             {this.hasStartSlot ? (
               <slot name="start" />
             ) : (
-              <ion-fab-button>
+              <ion-fab-button
+                onClick={(event) => this.enjinToggleMenu.emit({ event })}
+              >
                 <ion-icon color="dark" src="/assets/icon/icon.svg" />
               </ion-fab-button>
             )}
           </ion-buttons>
-          <ion-title>
+          <ion-title contentEditable={this.editable}>
             {this.hasTitleSlot ? (
               <slot name="title" />
             ) : this.pageTitle ? (

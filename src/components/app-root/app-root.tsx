@@ -3,12 +3,14 @@ import { ComponentInterface, Build, Component, Listen, h } from "@stencil/core";
 import env from "../../helpers/env";
 import { AuthService } from "../../helpers/auth";
 import { DatabaseService } from "../../helpers/database";
+import { popoverController } from "@ionic/core";
 
 @Component({
   tag: "app-root",
   styleUrl: "app-root.css",
 })
 export class AppRoot implements ComponentInterface {
+  menuPopoverEl: HTMLIonPopoverElement;
   stopLoader = true;
   sharePopover: HTMLIonPopoverElement;
   routerEl: HTMLIonRouterElement;
@@ -32,15 +34,41 @@ export class AppRoot implements ComponentInterface {
     db: this.db,
   };
 
-  @Listen("ionRouteDidChange")
-  onRouteDidChange() {
-    if (!Build.isBrowser) {
-      return false;
+  @Listen("onDidDismiss", { target: "body" })
+  onMenuDismiss() {
+    this.menuPopoverEl = null;
+  }
+
+  @Listen("enjinToggleMenu")
+  async onToggleMenu(event) {
+    if (this.menuPopoverEl) {
+      await this.menuPopoverEl.dismiss();
+      this.menuPopoverEl = null;
+      return;
     }
+    this.menuPopoverEl = await popoverController.create({
+      component: "app-menu",
+      componentProps: {
+        db: this.db,
+        auth: this.auth,
+        config: this.config,
+      },
+      event,
+    });
+    return this.menuPopoverEl.present();
+  }
+
+  @Listen("ionRouteDidChange")
+  onRouteDidChange(event) {
+    if (!Build.isBrowser) return false;
 
     if (this.stopLoader) {
       document.querySelector("app-root").classList.add("is-loaded");
       this.stopLoader = false;
+    }
+
+    if (event?.detail?.to === "/" && this.auth?.isLoggedIn()) {
+      window.location.href = "/editor/home";
     }
 
     return true;
@@ -89,7 +117,7 @@ export class AppRoot implements ComponentInterface {
             componentProps={this.defaultProps}
           />
           <ion-route
-            url="/editor"
+            url="/editor/:pageId"
             component="app-editor"
             componentProps={this.defaultProps}
           />

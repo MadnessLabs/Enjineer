@@ -17,7 +17,7 @@ export class AppLogin implements ComponentInterface {
     try {
       res = await this.auth.withSocial(type);
       if (res?.user?.uid) {
-        window.location.href = "/editor";
+        window.location.href = "/editor/home";
       }
     } catch (error) {
       this.error = error.message;

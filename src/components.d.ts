@@ -16,13 +16,20 @@ export namespace Components {
         "auth": AuthService;
         "config": any;
         "db": DatabaseService;
+        "pageId": string;
     }
     interface AppHeader {
+        "editable": boolean;
         "pageTitle": string;
     }
     interface AppLogin {
         "auth": AuthService;
         "config": any;
+    }
+    interface AppMenu {
+        "auth": AuthService;
+        "config": any;
+        "db": DatabaseService;
     }
     interface AppProfile {
         "auth": AuthService;
@@ -60,6 +67,12 @@ declare global {
         prototype: HTMLAppLoginElement;
         new (): HTMLAppLoginElement;
     };
+    interface HTMLAppMenuElement extends Components.AppMenu, HTMLStencilElement {
+    }
+    var HTMLAppMenuElement: {
+        prototype: HTMLAppMenuElement;
+        new (): HTMLAppMenuElement;
+    };
     interface HTMLAppProfileElement extends Components.AppProfile, HTMLStencilElement {
     }
     var HTMLAppProfileElement: {
@@ -83,6 +96,7 @@ declare global {
         "app-editor": HTMLAppEditorElement;
         "app-header": HTMLAppHeaderElement;
         "app-login": HTMLAppLoginElement;
+        "app-menu": HTMLAppMenuElement;
         "app-profile": HTMLAppProfileElement;
         "app-root": HTMLAppRootElement;
         "enjineer-editor": HTMLEnjineerEditorElement;
@@ -97,13 +111,22 @@ declare namespace LocalJSX {
         "auth"?: AuthService;
         "config"?: any;
         "db"?: DatabaseService;
+        "pageId"?: string;
     }
     interface AppHeader {
+        "editable"?: boolean;
+        "onEnjinToggleMenu"?: (event: CustomEvent<any>) => void;
         "pageTitle"?: string;
     }
     interface AppLogin {
         "auth"?: AuthService;
         "config"?: any;
+    }
+    interface AppMenu {
+        "auth"?: AuthService;
+        "config"?: any;
+        "db"?: DatabaseService;
+        "onEnjinToggleMenu"?: (event: CustomEvent<any>) => void;
     }
     interface AppProfile {
         "auth"?: AuthService;
@@ -120,6 +143,7 @@ declare namespace LocalJSX {
         "app-editor": AppEditor;
         "app-header": AppHeader;
         "app-login": AppLogin;
+        "app-menu": AppMenu;
         "app-profile": AppProfile;
         "app-root": AppRoot;
         "enjineer-editor": EnjineerEditor;
@@ -133,6 +157,7 @@ declare module "@stencil/core" {
             "app-editor": LocalJSX.AppEditor & JSXBase.HTMLAttributes<HTMLAppEditorElement>;
             "app-header": LocalJSX.AppHeader & JSXBase.HTMLAttributes<HTMLAppHeaderElement>;
             "app-login": LocalJSX.AppLogin & JSXBase.HTMLAttributes<HTMLAppLoginElement>;
+            "app-menu": LocalJSX.AppMenu & JSXBase.HTMLAttributes<HTMLAppMenuElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
             "enjineer-editor": LocalJSX.EnjineerEditor & JSXBase.HTMLAttributes<HTMLEnjineerEditorElement>;

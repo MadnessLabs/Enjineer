@@ -2,6 +2,10 @@ app-root ion-header {
   text-align: center;
 }
 
+app-root ion-popover .popover-content {
+  --width: 300px;
+}
+
 app-root .add-donations {
   color: var(--ion-color-primary);
   font-weight: bold;
