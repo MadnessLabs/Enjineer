@@ -37,11 +37,16 @@ export class AppEditor implements ComponentInterface {
   async componentDidLoad() {
     this.session = this.auth.isLoggedIn();
     if (this.session) {
-      const editorJS = await this.editorEl.getInstance();
-      const userData = await this.db.find("users", this.session.uid);
-      editorJS.blocks.render(
-        userData.currentEditor ? userData.currentEditor : {}
-      );
+      setTimeout(async () => {
+        const editorJS = await this.editorEl.getInstance();
+        const userData = await this.db.find("users", this.session.uid);
+        if (editorJS?.blocks?.render && userData?.id) {
+          console.log(userData.currentEditor);
+          editorJS.blocks.render(
+            userData.currentEditor ? userData.currentEditor : {}
+          );
+        }
+      }, 1000);
     }
   }
 
