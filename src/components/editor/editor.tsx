@@ -6,6 +6,7 @@ import {
   h,
   Prop,
   Method,
+  Host,
 } from "@stencil/core";
 import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
@@ -16,6 +17,7 @@ import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import Table from "@editorjs/table";
 import Button from "./blocks/Button";
+import SplitPane from "./blocks/SplitPane";
 
 @Component({
   tag: "enjineer-editor",
@@ -45,6 +47,9 @@ export class EnjineerEditor implements ComponentInterface {
       tools: {
         button: {
           class: Button,
+        },
+        splitPane: {
+          class: SplitPane,
         },
         table: {
           class: Table,
@@ -76,6 +81,6 @@ export class EnjineerEditor implements ComponentInterface {
   }
 
   render() {
-    return <div id="editorjs"></div>;
+    return <Host id="editorjs" />;
   }
 }

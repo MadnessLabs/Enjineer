@@ -1,3 +1,4 @@
+import "split-me";
 import { ComponentInterface, Build, Component, Listen, h } from "@stencil/core";
 
 import env from "../../helpers/env";

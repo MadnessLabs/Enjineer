@@ -37,18 +37,12 @@ export class AppProfile implements ComponentInterface {
   render() {
     return [
       <app-header pageTitle="Your Profile">
-        <ion-button
-          color="danger"
-          slot="end"
-          fill="solid"
-          shape="round"
-          onClick={() => this.logout()}
-        >
+        <ion-button color="danger" slot="end" onClick={() => this.logout()}>
           Logout
           <ion-icon slot="end" name="power" />
         </ion-button>
       </app-header>,
-      <ion-content class="ion-padding">Your Profile</ion-content>,
+      <ion-content class="ion-padding"></ion-content>,
     ];
   }
 }
