@@ -17,6 +17,7 @@ import isEqual from "../../helpers/isEqual";
 })
 export class AppEditor implements ComponentInterface {
   editorEl: HTMLEnjineerEditorElement;
+  editorJs: any;
   headerEl: HTMLAppHeaderElement;
   skipRender = false;
 
@@ -60,24 +61,23 @@ export class AppEditor implements ComponentInterface {
 
   @Debounce(1000)
   async editorWatcher(doc) {
-    const editorJS = await this.editorEl.getInstance();
-    if (this.page === doc.data) return;
+    if (isEqual(this.page, doc?.data)) return;
     this.page = doc?.data ? doc.data : null;
-    editorJS.blocks.render(this.page.editor ? this.page.editor : {});
+    this.editorJs.blocks.render(this.page.editor ? this.page.editor : {});
   }
 
   async componentDidLoad() {
     this.session = this.auth.isLoggedIn();
     if (this.session) {
       setTimeout(async () => {
-        const editorJS = await this.editorEl.getInstance();
-        if (this.pageId === "home" && editorJS?.blocks?.render) {
+        this.editorJs = await this.editorEl.getInstance();
+        if (this.pageId === "home" && this.editorJs?.blocks?.render) {
           await this.db.watchDocument(
             "users",
             this.session.uid,
             this.editorWatcher.bind(this)
           );
-        } else if (editorJS?.blocks?.render) {
+        } else if (this.editorJs?.blocks?.render) {
           await this.db.watchDocument(
             "pages",
             this.pageId,
