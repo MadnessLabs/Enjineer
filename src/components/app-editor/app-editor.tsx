@@ -64,7 +64,8 @@ export class AppEditor implements ComponentInterface {
   }
 
   openProfile() {
-    window.location.href = "/profile";
+    const routerEl = document.querySelector("ion-router");
+    routerEl.push("/profile");
   }
 
   render() {
@@ -97,7 +98,10 @@ export class AppEditor implements ComponentInterface {
         )}
       </app-header>,
       <ion-content class="ion-padding">
-        <enjineer-editor ref={(el) => (this.editorEl = el)} />
+        <enjineer-editor
+          ref={(el) => (this.editorEl = el)}
+          userId={this.session?.uid}
+        />
       </ion-content>,
     ];
   }

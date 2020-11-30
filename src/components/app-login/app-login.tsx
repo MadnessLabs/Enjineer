@@ -16,8 +16,9 @@ export class AppLogin implements ComponentInterface {
     let res;
     try {
       res = await this.auth.withSocial(type);
-      if (res?.user?.uid) {
-        window.location.href = "/editor/home";
+      const routerEl = document.querySelector("ion-router");
+      if (res?.user?.uid && routerEl) {
+        routerEl.push("/editor/home");
       }
     } catch (error) {
       this.error = error.message;

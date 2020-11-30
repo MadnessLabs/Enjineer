@@ -8,6 +8,8 @@ import {
   Method,
   Host,
 } from "@stencil/core";
+import firebase from "firebase/app";
+import "firebase/storage";
 import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
 import List from "@editorjs/list";
@@ -16,7 +18,9 @@ import DragDrop from "editorjs-drag-drop";
 import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import Table from "@editorjs/table";
+import { MDParser, MDImporter } from "editorjsMdParser";
 import Button from "./blocks/Button";
+import EditorJSStyle from "editorjs-style";
 import SplitPane from "./blocks/SplitPane";
 
 @Component({
@@ -27,6 +31,7 @@ export class EnjineerEditor implements ComponentInterface {
   editorJS: EditorJS;
 
   @Prop() placeholder = "Let's Write Something!";
+  @Prop() userId: string;
 
   @Event() enjinChange: EventEmitter;
 
@@ -48,6 +53,7 @@ export class EnjineerEditor implements ComponentInterface {
         button: {
           class: Button,
         },
+        editorJSStyle: EditorJSStyle,
         splitPane: {
           class: SplitPane,
         },
@@ -58,10 +64,14 @@ export class EnjineerEditor implements ComponentInterface {
           class: Paragraph,
           inlineToolbar: true,
         },
-        header: Header,
+        markdownParser: MDParser,
+        markdownImporter: MDImporter,
+        header: {
+          class: Header,
+          inlineToolbar: true,
+        },
         embed: {
           class: Embed,
-          inlineToolbar: true,
         },
         list: {
           class: List,
@@ -70,9 +80,58 @@ export class EnjineerEditor implements ComponentInterface {
         image: {
           class: ImageTool,
           config: {
-            endpoints: {
-              byFile: "http://localhost:8008/uploadFile", // Your backend file uploader endpoint
-              byUrl: "http://localhost:8008/fetchUrl", // Your endpoint that provides uploading by Url
+            uploader: {
+              uploadByFile: (file) => {
+                return new Promise((resolve, reject) => {
+                  const uploadTask = firebase
+                    .storage()
+                    .ref(`/users/${this.userId}/${file.name}`)
+                    .put(file, {});
+                  uploadTask.on(
+                    "state_changed",
+                    function (snapshot) {
+                      var progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                      console.log("Upload is " + progress + "% done");
+                      switch (snapshot.state) {
+                        case firebase.storage.TaskState.PAUSED: // or 'paused'
+                          console.log("Upload is paused");
+                          break;
+                        case firebase.storage.TaskState.RUNNING: // or 'running'
+                          console.log("Upload is running");
+                          break;
+                      }
+                    },
+                    function (error) {
+                      reject(error);
+                    },
+                    function () {
+                      uploadTask.snapshot.ref
+                        .getDownloadURL()
+                        .then(function (url) {
+                          resolve({
+                            success: true,
+                            file: {
+                              url,
+                            },
+                          });
+                        });
+                    }
+                  );
+                });
+              },
+
+              /**
+               * Send URL-string to the server. Backend should load image by this URL and return an uploaded image data
+               * @param {string} url - pasted image URL
+               * @return {Promise.<{success, file: {url}}>}
+               */
+              uploadByUrl: async (url) => ({
+                success: true,
+                file: {
+                  url,
+                },
+              }),
             },
           },
         },

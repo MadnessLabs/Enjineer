@@ -39,6 +39,8 @@
     "@ionic/core": "^5.5.0",
     "editorjs-drag-drop": "^0.1.1",
     "editorjs-paragraph-with-alignment": "^1.1.0",
+    "editorjs-style": "^2.2.0",
+    "editorjsMdParser": "git+https://github.com/stejul/editorjs-markdown-parser.git",
     "firebase": "^8.1.1",
     "split-me": "^1.2.2"
   },

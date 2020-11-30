@@ -28,7 +28,10 @@ export class AppMenu {
     console.log(newPage);
     await this.fetchPages();
     this.enjinToggleMenu.emit({ event });
-    window.location.href = `/editor/${newPage.id}`;
+    const routerEl = document.querySelector("ion-router");
+    if (routerEl) {
+      routerEl.push(`/editor/${newPage.id}`);
+    }
 
     return newPage;
   }
@@ -41,7 +44,7 @@ export class AppMenu {
         .where("users", "array-contains", this.auth.isLoggedIn().uid)
         .get()
     ).docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-    console.log(this.pages);
+
     return this.pages;
   }
 

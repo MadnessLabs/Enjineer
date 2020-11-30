@@ -40,6 +40,7 @@ export namespace Components {
     interface EnjineerEditor {
         "getInstance": () => Promise<any>;
         "placeholder": string;
+        "userId": string;
     }
 }
 declare global {
@@ -137,6 +138,7 @@ declare namespace LocalJSX {
     interface EnjineerEditor {
         "onEnjinChange"?: (event: CustomEvent<any>) => void;
         "placeholder"?: string;
+        "userId"?: string;
     }
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
