@@ -6,9 +6,10 @@ import {
   Prop,
   State,
 } from "@stencil/core";
-
+import Debounce from "debounce-decorator";
 import { AuthService } from "../../helpers/auth";
 import { DatabaseService } from "../../helpers/database";
+import isEqual from "../../helpers/isEqual";
 
 @Component({
   tag: "app-editor",
@@ -17,6 +18,7 @@ import { DatabaseService } from "../../helpers/database";
 export class AppEditor implements ComponentInterface {
   editorEl: HTMLEnjineerEditorElement;
   headerEl: HTMLAppHeaderElement;
+  skipRender = false;
 
   @Prop() auth: AuthService;
   @Prop() config: any = {};
@@ -40,18 +42,28 @@ export class AppEditor implements ComponentInterface {
   }
 
   @Listen("enjinChange")
+  @Debounce(1000)
   async onEditorChange(event) {
     if (!this.session) return;
-    const currentEditor = await event.detail.instance.save();
+    const editor = await event.detail.instance.save();
+    if (isEqual(editor?.blocks, this.page?.editor?.blocks)) return;
     if (this.pageId === "home") {
       await this.db.document("users", this.session.uid).update({
-        currentEditor,
+        editor,
       });
     } else {
       await this.db.document("pages", this.pageId).update({
-        editor: currentEditor,
+        editor,
       });
     }
+  }
+
+  @Debounce(1000)
+  async editorWatcher(doc) {
+    const editorJS = await this.editorEl.getInstance();
+    if (this.page === doc.data) return;
+    this.page = doc?.data ? doc.data : null;
+    editorJS.blocks.render(this.page.editor ? this.page.editor : {});
   }
 
   async componentDidLoad() {
@@ -59,20 +71,33 @@ export class AppEditor implements ComponentInterface {
     if (this.session) {
       setTimeout(async () => {
         const editorJS = await this.editorEl.getInstance();
-        if (this.pageId === "home") {
-          const userData = await this.db.find("users", this.session.uid);
-          if (editorJS?.blocks?.render && userData?.id) {
-            editorJS.blocks.render(
-              userData.currentEditor ? userData.currentEditor : {}
-            );
-          }
-        } else {
-          if (editorJS?.blocks?.render) {
-            this.page = await this.db.find("pages", this.pageId);
-            editorJS.blocks.render(this.page.editor ? this.page.editor : {});
-          }
+        if (this.pageId === "home" && editorJS?.blocks?.render) {
+          await this.db.watchDocument(
+            "users",
+            this.session.uid,
+            this.editorWatcher.bind(this)
+          );
+        } else if (editorJS?.blocks?.render) {
+          await this.db.watchDocument(
+            "pages",
+            this.pageId,
+            this.editorWatcher.bind(this)
+          );
         }
       }, 1000);
+    }
+  }
+
+  async disconnectedCallback() {
+    const editorJS = await this.editorEl.getInstance();
+    if (
+      this.session?.uid &&
+      this.pageId === "home" &&
+      editorJS?.blocks?.render
+    ) {
+      this.db.unwatchDocument("users", this.session.uid);
+    } else if (this.session?.uid && editorJS?.blocks?.render) {
+      this.db.unwatchDocument("pages", this.pageId);
     }
   }
 

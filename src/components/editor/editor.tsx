@@ -1,10 +1,10 @@
 import {
   ComponentInterface,
   Component,
+  Element,
   Event,
   EventEmitter,
   h,
-  Element,
   Prop,
   Method,
   Host,

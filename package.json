@@ -37,6 +37,7 @@
     "@ionic-native/social-sharing": "^5.30.0",
     "@ionic-native/twitter-connect": "^5.30.0",
     "@ionic/core": "^5.5.0",
+    "debounce-decorator": "^1.0.6",
     "editorjs-drag-drop": "^0.1.1",
     "editorjs-paragraph-with-alignment": "^1.1.0",
     "editorjs-style": "^2.2.0",
