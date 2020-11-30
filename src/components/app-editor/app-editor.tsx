@@ -16,6 +16,7 @@ import { DatabaseService } from "../../helpers/database";
 })
 export class AppEditor implements ComponentInterface {
   editorEl: HTMLEnjineerEditorElement;
+  headerEl: HTMLAppHeaderElement;
 
   @Prop() auth: AuthService;
   @Prop() config: any = {};
@@ -25,6 +26,18 @@ export class AppEditor implements ComponentInterface {
   @State() error: string;
   @State() session: firebase.default.User;
   @State() page: any;
+
+  @Listen("enjinEditTitle", { target: "body" })
+  async onEditTitle(event) {
+    if (
+      event.target === this.headerEl &&
+      event?.detail?.event?.target?.textContent
+    ) {
+      await this.db.document("pages", this.pageId).update({
+        name: event.detail.event.target.textContent,
+      });
+    }
+  }
 
   @Listen("enjinChange")
   async onEditorChange(event) {
@@ -42,7 +55,6 @@ export class AppEditor implements ComponentInterface {
   }
 
   async componentDidLoad() {
-    console.log("I ran");
     this.session = this.auth.isLoggedIn();
     if (this.session) {
       setTimeout(async () => {
@@ -72,8 +84,9 @@ export class AppEditor implements ComponentInterface {
   render() {
     return [
       <app-header
-        editable
+        ref={(el) => (this.headerEl = el)}
         pageTitle={this.page?.name ? this.page.name : "Enjineer"}
+        editable={this.page?.name}
       >
         {this.session ? (
           <ion-avatar slot="end">

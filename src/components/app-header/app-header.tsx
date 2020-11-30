@@ -6,6 +6,7 @@ import {
   EventEmitter,
   Prop,
   h,
+  Listen,
 } from "@stencil/core";
 
 @Component({
@@ -20,9 +21,15 @@ export class AppHeader implements ComponentInterface {
   @Element() hostElement: HTMLElement;
 
   @Event() enjinToggleMenu: EventEmitter;
+  @Event() enjinEditTitle: EventEmitter;
 
   @Prop() pageTitle: string;
   @Prop() editable = false;
+
+  @Listen("input")
+  onInput(event) {
+    this.enjinEditTitle.emit({ event });
+  }
 
   componentWillLoad() {
     this.hasEndSlot = !!this.hostElement.querySelector('[slot="end"]');
@@ -51,7 +58,7 @@ export class AppHeader implements ComponentInterface {
             ) : this.pageTitle ? (
               this.pageTitle
             ) : (
-              <img src="/assets/images/TrackMyGiving-Light.svg" />
+              "Enjineer"
             )}
           </ion-title>
           <ion-buttons

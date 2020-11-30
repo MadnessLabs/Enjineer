@@ -116,6 +116,7 @@ declare namespace LocalJSX {
     }
     interface AppHeader {
         "editable"?: boolean;
+        "onEnjinEditTitle"?: (event: CustomEvent<any>) => void;
         "onEnjinToggleMenu"?: (event: CustomEvent<any>) => void;
         "pageTitle"?: string;
     }
