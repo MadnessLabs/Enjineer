@@ -59,14 +59,6 @@ export class AppRoot implements ComponentInterface {
     return this.menuPopoverEl.present();
   }
 
-  @Listen("ionRouteWillChange")
-  onRouteWillChange(event) {
-    if (event.detail.to.includes("/editor/")) {
-      document.querySelector("app-dashboard").remove();
-    }
-    return true;
-  }
-
   @Listen("ionRouteDidChange")
   onRouteDidChange(event) {
     if (!Build.isBrowser) return false;
@@ -77,7 +69,7 @@ export class AppRoot implements ComponentInterface {
     }
 
     if (event?.detail?.to === "/" && this.auth?.isLoggedIn()) {
-      window.location.href = "/editor/home";
+      this.routerEl.push("/editor/home");
     }
 
     return true;

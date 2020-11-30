@@ -42,6 +42,7 @@ export class AppEditor implements ComponentInterface {
   }
 
   async componentDidLoad() {
+    console.log("I ran");
     this.session = this.auth.isLoggedIn();
     if (this.session) {
       setTimeout(async () => {

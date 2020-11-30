@@ -4,6 +4,7 @@ import {
   Event,
   EventEmitter,
   h,
+  Element,
   Prop,
   Method,
   Host,
@@ -30,6 +31,8 @@ import SplitPane from "./blocks/SplitPane";
 export class EnjineerEditor implements ComponentInterface {
   editorJS: EditorJS;
 
+  @Element() editorEl: HTMLEnjineerEditorElement;
+
   @Prop() placeholder = "Let's Write Something!";
   @Prop() userId: string;
 
@@ -49,6 +52,7 @@ export class EnjineerEditor implements ComponentInterface {
         this.enjinChange.emit({ instance: this.editorJS });
       },
       placeholder: this.placeholder,
+      holder: this.editorEl,
       tools: {
         button: {
           class: Button,
@@ -140,6 +144,6 @@ export class EnjineerEditor implements ComponentInterface {
   }
 
   render() {
-    return <Host id="editorjs" />;
+    return <Host />;
   }
 }
