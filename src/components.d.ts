@@ -28,8 +28,10 @@ export namespace Components {
     }
     interface AppMenu {
         "auth": AuthService;
+        "blockIndex": number;
         "config": any;
         "db": DatabaseService;
+        "selectingPage": boolean;
     }
     interface AppProfile {
         "auth": AuthService;
@@ -126,9 +128,12 @@ declare namespace LocalJSX {
     }
     interface AppMenu {
         "auth"?: AuthService;
+        "blockIndex"?: number;
         "config"?: any;
         "db"?: DatabaseService;
+        "onEnjinSelectPage"?: (event: CustomEvent<any>) => void;
         "onEnjinToggleMenu"?: (event: CustomEvent<any>) => void;
+        "selectingPage"?: boolean;
     }
     interface AppProfile {
         "auth"?: AuthService;

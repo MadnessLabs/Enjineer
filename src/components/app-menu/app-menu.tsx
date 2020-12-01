@@ -10,10 +10,13 @@ export class AppMenu {
   timestamp = new Date();
 
   @Event() enjinToggleMenu: EventEmitter;
+  @Event() enjinSelectPage: EventEmitter;
 
   @Prop() db: DatabaseService;
   @Prop() auth: AuthService;
   @Prop() config: any;
+  @Prop() selectingPage = false;
+  @Prop() blockIndex: number;
 
   @State() pages: any[] = [];
 
@@ -25,15 +28,31 @@ export class AppMenu {
       }/${this.timestamp.getDate()}`,
       users: [this.auth.isLoggedIn().uid],
     });
-    console.log(newPage);
     await this.fetchPages();
     this.enjinToggleMenu.emit({ event });
-    const routerEl = document.querySelector("ion-router");
-    if (routerEl) {
-      routerEl.push(`/editor/${newPage.id}`);
+    if (this.selectingPage) {
+      this.enjinSelectPage.emit({
+        event,
+        page: newPage,
+        blockIndex: this.blockIndex,
+      });
+    } else {
+      const routerEl = document.querySelector("ion-router");
+      if (routerEl) {
+        routerEl.push(`/editor/${newPage.id}`);
+      }
     }
 
     return newPage;
+  }
+
+  async itemClick(event, page) {
+    event.preventDefault();
+    event.stopPropagation();
+    if (this.selectingPage) {
+      this.enjinSelectPage.emit({ event, page, blockIndex: this.blockIndex });
+    }
+    this.enjinToggleMenu.emit({ event });
   }
 
   async fetchPages() {
@@ -57,17 +76,17 @@ export class AppMenu {
       <ion-list>
         <ion-item
           detail
-          href="/editor/home"
-          onClick={(event) => this.enjinToggleMenu.emit({ event })}
+          href={this.selectingPage ? "#" : "/editor/home"}
+          onClick={(event) => this.itemClick(event, null)}
         >
           <ion-icon slot="start" name="home" />
           <ion-label>Home</ion-label>
         </ion-item>
         {this.pages.map((page) => (
           <ion-item
-            href={`/editor/${page.id}`}
+            href={this.selectingPage ? "#" : `/editor/${page.id}`}
             detail
-            onClick={(event) => this.enjinToggleMenu.emit({ event })}
+            onClick={(event) => this.itemClick(event, page)}
           >
             <ion-icon name="document" slot="start" />
             <ion-label>{page.name}</ion-label>

@@ -40,7 +40,7 @@ export class AppRoot implements ComponentInterface {
     this.menuPopoverEl = null;
   }
 
-  @Listen("enjinToggleMenu")
+  @Listen("enjinToggleMenu", { target: "body" })
   async onToggleMenu(event) {
     if (this.menuPopoverEl) {
       await this.menuPopoverEl.dismiss();
@@ -53,8 +53,10 @@ export class AppRoot implements ComponentInterface {
         db: this.db,
         auth: this.auth,
         config: this.config,
+        selectingPage: !!event.detail?.selectingPage,
+        blockIndex: event?.detail?.blockIndex,
       },
-      event,
+      event: event.detail.event,
     });
     return this.menuPopoverEl.present();
   }

@@ -20,8 +20,9 @@ import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import Table from "@editorjs/table";
 import { MDParser, MDImporter } from "editorjsMdParser";
+import Page from "editorjs-style";
 import Button from "./blocks/Button";
-import EditorJSStyle from "editorjs-style";
+import EditorJSStyle from "./blocks/Page";
 import SplitPane from "./blocks/SplitPane";
 
 @Component({
@@ -63,6 +64,9 @@ export class EnjineerEditor implements ComponentInterface {
         },
         table: {
           class: Table,
+        },
+        page: {
+          class: Page,
         },
         paragraph: {
           class: Paragraph,

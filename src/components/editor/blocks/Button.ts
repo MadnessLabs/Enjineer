@@ -24,7 +24,7 @@ export default class Button {
 
   render() {
     const buttonEl = document.createElement("ion-button");
-    buttonEl.innerHTML = `<div contenteditable="true">New Button</div>`;
+    buttonEl.innerHTML = `<div contenteditable="true">${this.data?.text}</div>`;
     return buttonEl;
   }
 
