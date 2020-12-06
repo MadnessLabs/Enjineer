@@ -1,6 +1,6 @@
 {
-  "name": "FireEnjin",
-  "short_name": "FireEnjin",
+  "name": "Madness Enjineer",
+  "short_name": "Enjineer",
   "start_url": "/",
   "display": "standalone",
   "icons": [
@@ -16,5 +16,5 @@
     }
   ],
   "background_color": "#FFFFFF",
-  "theme_color": "#ffc409"
+  "theme_color": "#56a48a"
 }

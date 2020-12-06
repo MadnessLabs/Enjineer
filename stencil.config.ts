@@ -6,9 +6,12 @@ export const config: Config = {
   outputTargets: [
     {
       type: "www",
-      serviceWorker: null
-    }
+      serviceWorker: {
+        swSrc: "src/sw.js",
+        globPatterns: ["**/*.{js,css,json,html,ico,png}"],
+      },
+    },
   ],
   globalScript: "src/global/app.ts",
-  globalStyle: "src/global/app.css"
+  globalStyle: "src/global/app.css",
 };
