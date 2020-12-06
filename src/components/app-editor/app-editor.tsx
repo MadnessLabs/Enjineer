@@ -20,6 +20,8 @@ export class AppEditor implements ComponentInterface {
   editorJs: any;
   headerEl: HTMLAppHeaderElement;
   skipRender = false;
+  page: any;
+  blockIndex: number;
 
   @Prop() auth: AuthService;
   @Prop() config: any = {};
@@ -28,7 +30,6 @@ export class AppEditor implements ComponentInterface {
 
   @State() error: string;
   @State() session: firebase.default.User;
-  @State() page: any;
 
   @Listen("enjinEditTitle", { target: "body" })
   async onEditTitle(event) {
@@ -43,7 +44,7 @@ export class AppEditor implements ComponentInterface {
   }
 
   @Listen("enjinChange")
-  @Debounce(1000)
+  @Debounce(3000)
   async onEditorChange(event) {
     if (!this.session) return;
     const editor = await event.detail.instance.save();
@@ -59,7 +60,6 @@ export class AppEditor implements ComponentInterface {
     }
   }
 
-  @Debounce(1000)
   async editorWatcher(doc) {
     if (isEqual(this.page, doc?.data)) return;
     this.page = doc?.data ? doc.data : null;
