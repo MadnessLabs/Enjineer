@@ -49,6 +49,7 @@
     "@madnesslabs/fireenjin": "^1.4.0",
     "@stencil/core": "^2.3.0",
     "firebase-tools": "^8.16.2",
-    "typescript": "^3.9.7"
+    "typescript": "^3.9.7",
+    "workbox-build": "^4.3.1"
   }
 }
