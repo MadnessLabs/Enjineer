@@ -40,6 +40,7 @@ export namespace Components {
     interface AppRoot {
     }
     interface EnjineerEditor {
+        "exportHTML": () => Promise<string>;
         "getInstance": () => Promise<any>;
         "placeholder": string;
         "userId": string;

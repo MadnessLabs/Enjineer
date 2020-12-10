@@ -18,12 +18,15 @@ export default class Button {
   }
 
   constructor({ data, api }) {
-    this.data = data;
+    this.data = { text: "New Button", shape: "square", ...data };
     this.api = api;
   }
 
   render() {
     const buttonEl = document.createElement("ion-button");
+    if (this.data?.shape) {
+      buttonEl.shape = this.data.shape;
+    }
     buttonEl.innerHTML = `<div contenteditable="true">${this.data?.text}</div>`;
     return buttonEl;
   }
@@ -55,6 +58,7 @@ export default class Button {
   save(button) {
     return {
       text: button.innerText,
+      shape: button.shape ? button.shape : "square",
     };
   }
 }

@@ -18,6 +18,7 @@ import Embed from "@editorjs/embed";
 import DragDrop from "editorjs-drag-drop";
 import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
+import edjsParser from "editorjs-parser";
 import Table from "@editorjs/table";
 import { MDParser, MDImporter } from "editorjsMdParser";
 import Page from "editorjs-style";
@@ -42,6 +43,17 @@ export class EnjineerEditor implements ComponentInterface {
   @Method()
   async getInstance(): Promise<any> {
     return this.editorJS;
+  }
+
+  @Method()
+  async exportHTML(): Promise<string> {
+    return new edjsParser(null, {
+      button: (data) => {
+        return `<ion-button shape="${data.shape ? data.shape : "square"}">${
+          data.text
+        }</ion-button>`;
+      },
+    }).parse(await this.editorJS.save());
   }
 
   componentDidLoad() {
