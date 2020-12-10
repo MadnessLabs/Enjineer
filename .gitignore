@@ -21,6 +21,7 @@ log.txt
 .firebase/
 node_modules/
 $RECYCLE.BIN/
+src/sw.js
 
 .DS_Store
 Thumbs.db
