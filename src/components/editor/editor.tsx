@@ -15,7 +15,6 @@ import EditorJS from "@editorjs/editorjs";
 import ImageTool from "@editorjs/image";
 import List from "@editorjs/list";
 import Embed from "@editorjs/embed";
-import DragDrop from "editorjs-drag-drop";
 import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
 import edjsParser from "editorjs-parser";
@@ -58,9 +57,6 @@ export class EnjineerEditor implements ComponentInterface {
 
   componentDidLoad() {
     this.editorJS = new EditorJS({
-      onReady: () => {
-        new DragDrop(this.editorJS);
-      },
       onChange: () => {
         this.enjinChange.emit({ instance: this.editorJS });
       },
