@@ -24,7 +24,7 @@
     "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
-    "@editorjs/editorjs": "^2.19.0",
+    "@editorjs/editorjs": "^2.19.1",
     "@editorjs/embed": "^2.4.0",
     "@editorjs/header": "^2.6.1",
     "@editorjs/image": "^2.6.0",
@@ -36,19 +36,19 @@
     "@ionic-native/google-plus": "^5.30.0",
     "@ionic-native/social-sharing": "^5.30.0",
     "@ionic-native/twitter-connect": "^5.30.0",
-    "@ionic/core": "^5.5.0",
+    "@ionic/core": "^5.5.2",
     "debounce-decorator": "^1.0.6",
     "editorjs-paragraph-with-alignment": "^1.1.0",
     "editorjs-parser": "^1.4.3",
     "editorjs-style": "^2.2.0",
     "editorjsMdParser": "git+https://github.com/stejul/editorjs-markdown-parser.git",
-    "firebase": "^8.1.1",
+    "firebase": "^8.1.2",
     "split-me": "^1.2.2"
   },
   "devDependencies": {
     "@madnesslabs/fireenjin": "^1.4.0",
     "@stencil/core": "^2.3.0",
-    "firebase-tools": "^8.16.2",
+    "firebase-tools": "^8.18.1",
     "typescript": "^3.9.7",
     "workbox-build": "^4.3.1"
   }
