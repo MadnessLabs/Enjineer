@@ -35,11 +35,15 @@ export class AppEditor implements ComponentInterface {
   async onEditTitle(event) {
     if (
       event.target === this.headerEl &&
-      event?.detail?.event?.target?.textContent
+      event?.detail?.event?.target?.textContent &&
+      this.session?.uid
     ) {
-      await this.db.document("pages", this.pageId).update({
-        name: event.detail.event.target.textContent,
-      });
+      await this.db
+        .document("users", this.session.uid)
+        .document("pages", this.pageId)
+        .update({
+          name: event.detail.event.target.textContent,
+        });
     }
   }
 
@@ -54,9 +58,12 @@ export class AppEditor implements ComponentInterface {
         editor,
       });
     } else {
-      await this.db.document("pages", this.pageId).update({
-        editor,
-      });
+      await this.db
+        .document("users", this.session.uid)
+        .document("pages", this.pageId)
+        .update({
+          editor,
+        });
     }
   }
 
@@ -78,11 +85,9 @@ export class AppEditor implements ComponentInterface {
             this.editorWatcher.bind(this)
           );
         } else if (this.editorJs?.blocks?.render) {
-          await this.db.watchDocument(
-            "pages",
-            this.pageId,
-            this.editorWatcher.bind(this)
-          );
+          await this.db
+            .document("users", this.session.uid)
+            .watchDocument("pages", this.pageId, this.editorWatcher.bind(this));
         }
       }, 1000);
     }

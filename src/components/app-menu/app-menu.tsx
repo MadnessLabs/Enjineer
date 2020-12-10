@@ -21,13 +21,17 @@ export class AppMenu {
   @State() pages: any[] = [];
 
   async addPage(event) {
-    if (!this.auth?.isLoggedIn()) return;
-    const newPage = await this.db.collection("pages").add({
-      name: `New Page - ${this.timestamp.getFullYear()}/${
-        this.timestamp.getMonth() + 1
-      }/${this.timestamp.getDate()}`,
-      users: [this.auth.isLoggedIn().uid],
-    });
+    const session = this.auth?.isLoggedIn();
+    if (!session) return;
+    const newPage = await this.db
+      .document("users", session.uid)
+      .collection("pages")
+      .add({
+        name: `New Page - ${this.timestamp.getFullYear()}/${
+          this.timestamp.getMonth() + 1
+        }/${this.timestamp.getDate()}`,
+        users: [this.auth.isLoggedIn().uid],
+      });
     await this.fetchPages();
     this.enjinToggleMenu.emit({ event });
     if (this.selectingPage) {
@@ -56,12 +60,10 @@ export class AppMenu {
   }
 
   async fetchPages() {
-    if (!this.auth?.isLoggedIn()) return;
+    const session = this.auth?.isLoggedIn();
+    if (!session) return;
     this.pages = (
-      await this.db
-        .collection("pages")
-        .where("users", "array-contains", this.auth.isLoggedIn().uid)
-        .get()
+      await this.db.document("users", session.uid).collection("pages").get()
     ).docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
     return this.pages;

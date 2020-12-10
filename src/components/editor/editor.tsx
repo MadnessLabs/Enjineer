@@ -17,12 +17,13 @@ import List from "@editorjs/list";
 import Embed from "@editorjs/embed";
 import Header from "@editorjs/header";
 import Paragraph from "editorjs-paragraph-with-alignment";
+import EditorJSStyle from "editorjs-style";
 import edjsParser from "editorjs-parser";
 import Table from "@editorjs/table";
 import { MDParser, MDImporter } from "editorjsMdParser";
-import Page from "editorjs-style";
 import Button from "./blocks/Button";
-import EditorJSStyle from "./blocks/Page";
+import Page from "./blocks/Page";
+import Raw from "@editorjs/raw";
 import SplitPane from "./blocks/SplitPane";
 
 @Component({
@@ -63,35 +64,16 @@ export class EnjineerEditor implements ComponentInterface {
       placeholder: this.placeholder,
       holder: this.editorEl,
       tools: {
-        button: {
-          class: Button,
-        },
-        editorJSStyle: EditorJSStyle,
-        splitPane: {
-          class: SplitPane,
-        },
-        table: {
-          class: Table,
-        },
-        page: {
-          class: Page,
-        },
         paragraph: {
           class: Paragraph,
           inlineToolbar: true,
         },
-        markdownParser: MDParser,
-        markdownImporter: MDImporter,
         header: {
           class: Header,
           inlineToolbar: true,
         },
-        embed: {
-          class: Embed,
-        },
-        list: {
-          class: List,
-          inlineToolbar: true,
+        button: {
+          class: Button,
         },
         image: {
           class: ImageTool,
@@ -150,6 +132,25 @@ export class EnjineerEditor implements ComponentInterface {
               }),
             },
           },
+        },
+        list: {
+          class: List,
+          inlineToolbar: true,
+        },
+        table: {
+          class: Table,
+        },
+        page: Page,
+        splitPane: {
+          class: SplitPane,
+          inlineToolbar: true,
+        },
+        raw: Raw,
+        editorJSStyle: EditorJSStyle,
+        markdownParser: MDParser,
+        markdownImporter: MDImporter,
+        embed: {
+          class: Embed,
         },
       },
     });
