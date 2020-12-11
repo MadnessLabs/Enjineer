@@ -1,3 +1,4 @@
+import { toastController } from "@ionic/core";
 import {
   Component,
   ComponentInterface,
@@ -6,7 +7,6 @@ import {
   Prop,
   State,
 } from "@stencil/core";
-import Debounce from "debounce-decorator";
 import { AuthService } from "../../helpers/auth";
 import { DatabaseService } from "../../helpers/database";
 import isEqual from "../../helpers/isEqual";
@@ -20,14 +20,18 @@ export class AppEditor implements ComponentInterface {
   editorJs: any;
   headerEl: HTMLAppHeaderElement;
   skipRender = false;
-  page: any;
   blockIndex: number;
+  pageRef: firebase.default.firestore.DocumentReference;
+  pageSubscription: any;
+  toastEl: HTMLIonToastElement;
+  editorSaveData: any;
 
   @Prop() auth: AuthService;
   @Prop() config: any = {};
   @Prop() db: DatabaseService;
   @Prop() pageId: string;
 
+  @State() page: any;
   @State() error: string;
   @State() session: firebase.default.User;
 
@@ -39,8 +43,10 @@ export class AppEditor implements ComponentInterface {
       this.session?.uid
     ) {
       await this.db
-        .document("users", this.session.uid)
-        .document("pages", this.pageId)
+        .collection("users")
+        .doc(this.session.uid)
+        .collection("pages")
+        .doc(this.pageId)
         .update({
           name: event.detail.event.target.textContent,
         });
@@ -48,10 +54,10 @@ export class AppEditor implements ComponentInterface {
   }
 
   @Listen("enjinChange")
-  @Debounce(3000)
   async onEditorChange(event) {
     if (!this.session) return;
     const editor = await event.detail.instance.save();
+    this.editorSaveData = editor;
     if (isEqual(editor?.blocks, this.page?.editor?.blocks)) return;
     if (this.pageId === "home") {
       await this.db.document("users", this.session.uid).update({
@@ -59,50 +65,13 @@ export class AppEditor implements ComponentInterface {
       });
     } else {
       await this.db
-        .document("users", this.session.uid)
-        .document("pages", this.pageId)
+        .collection("users")
+        .doc(this.session.uid)
+        .collection("pages")
+        .doc(this.pageId)
         .update({
           editor,
         });
-    }
-  }
-
-  async editorWatcher(doc) {
-    if (isEqual(this.page, doc?.data)) return;
-    this.page = doc?.data ? doc.data : null;
-    this.editorJs.blocks.render(this.page.editor ? this.page.editor : {});
-  }
-
-  async componentDidLoad() {
-    this.session = this.auth.isLoggedIn();
-    if (this.session) {
-      setTimeout(async () => {
-        this.editorJs = await this.editorEl.getInstance();
-        if (this.pageId === "home" && this.editorJs?.blocks?.render) {
-          await this.db.watchDocument(
-            "users",
-            this.session.uid,
-            this.editorWatcher.bind(this)
-          );
-        } else if (this.editorJs?.blocks?.render) {
-          await this.db
-            .document("users", this.session.uid)
-            .watchDocument("pages", this.pageId, this.editorWatcher.bind(this));
-        }
-      }, 1000);
-    }
-  }
-
-  async disconnectedCallback() {
-    const editorJS = await this.editorEl.getInstance();
-    if (
-      this.session?.uid &&
-      this.pageId === "home" &&
-      editorJS?.blocks?.render
-    ) {
-      this.db.unwatchDocument("users", this.session.uid);
-    } else if (this.session?.uid && editorJS?.blocks?.render) {
-      this.db.unwatchDocument("pages", this.pageId);
     }
   }
 
@@ -111,12 +80,65 @@ export class AppEditor implements ComponentInterface {
     routerEl.push("/profile");
   }
 
+  async fetchPage(page?: any) {
+    this.page = page ? page : (await this.pageRef.get()).data();
+    this.editorJs.blocks.render(this.page.editor ? this.page.editor : {});
+  }
+
+  async componentDidLoad() {
+    this.session = this.auth.isLoggedIn();
+    if (this.session) {
+      setTimeout(async () => {
+        this.editorJs = await this.editorEl.getInstance();
+        this.pageRef =
+          this.pageId === "home" && this.editorJs?.blocks?.render
+            ? this.db.collection("users").doc(this.session.uid)
+            : this.db
+                .collection("users")
+                .doc(this.session.uid)
+                .collection("pages")
+                .doc(this.pageId);
+        await this.fetchPage();
+        this.pageSubscription = this.pageRef.onSnapshot(async (doc) => {
+          if (
+            this.editorSaveData?.blocks &&
+            this.editorSaveData?.time !== doc.data()?.editor?.time
+          ) {
+            this.toastEl = await toastController.create({
+              message: "Page has been updated, sync now?",
+              buttons: [
+                {
+                  text: "Yes",
+                  handler: () => {
+                    this.fetchPage();
+                    this.toastEl.dismiss();
+                  },
+                },
+                {
+                  text: "Ignore",
+                  handler: () => {
+                    this.toastEl.dismiss();
+                  },
+                },
+              ],
+            });
+            this.toastEl.present();
+          }
+        });
+      }, 1000);
+    }
+  }
+
+  async disconnectedCallback() {
+    this.pageSubscription();
+  }
+
   render() {
     return [
       <app-header
         ref={(el) => (this.headerEl = el)}
         pageTitle={this.page?.name ? this.page.name : "Enjineer"}
-        editable={this.page?.name}
+        editable={this.pageId !== "home"}
       >
         {this.session ? (
           <ion-avatar slot="end">
