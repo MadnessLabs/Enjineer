@@ -39,12 +39,6 @@ export namespace Components {
     }
     interface AppRoot {
     }
-    interface EnjineerEditor {
-        "exportHTML": () => Promise<string>;
-        "getInstance": () => Promise<any>;
-        "placeholder": string;
-        "userId": string;
-    }
 }
 declare global {
     interface HTMLAppDashboardElement extends Components.AppDashboard, HTMLStencilElement {
@@ -89,12 +83,6 @@ declare global {
         prototype: HTMLAppRootElement;
         new (): HTMLAppRootElement;
     };
-    interface HTMLEnjineerEditorElement extends Components.EnjineerEditor, HTMLStencilElement {
-    }
-    var HTMLEnjineerEditorElement: {
-        prototype: HTMLEnjineerEditorElement;
-        new (): HTMLEnjineerEditorElement;
-    };
     interface HTMLElementTagNameMap {
         "app-dashboard": HTMLAppDashboardElement;
         "app-editor": HTMLAppEditorElement;
@@ -103,7 +91,6 @@ declare global {
         "app-menu": HTMLAppMenuElement;
         "app-profile": HTMLAppProfileElement;
         "app-root": HTMLAppRootElement;
-        "enjineer-editor": HTMLEnjineerEditorElement;
     }
 }
 declare namespace LocalJSX {
@@ -142,11 +129,6 @@ declare namespace LocalJSX {
     }
     interface AppRoot {
     }
-    interface EnjineerEditor {
-        "onEnjinChange"?: (event: CustomEvent<any>) => void;
-        "placeholder"?: string;
-        "userId"?: string;
-    }
     interface IntrinsicElements {
         "app-dashboard": AppDashboard;
         "app-editor": AppEditor;
@@ -155,7 +137,6 @@ declare namespace LocalJSX {
         "app-menu": AppMenu;
         "app-profile": AppProfile;
         "app-root": AppRoot;
-        "enjineer-editor": EnjineerEditor;
     }
 }
 export { LocalJSX as JSX };
@@ -169,7 +150,6 @@ declare module "@stencil/core" {
             "app-menu": LocalJSX.AppMenu & JSXBase.HTMLAttributes<HTMLAppMenuElement>;
             "app-profile": LocalJSX.AppProfile & JSXBase.HTMLAttributes<HTMLAppProfileElement>;
             "app-root": LocalJSX.AppRoot & JSXBase.HTMLAttributes<HTMLAppRootElement>;
-            "enjineer-editor": LocalJSX.EnjineerEditor & JSXBase.HTMLAttributes<HTMLEnjineerEditorElement>;
         }
     }
 }

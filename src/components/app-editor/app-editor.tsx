@@ -16,7 +16,7 @@ import isEqual from "../../helpers/isEqual";
   styleUrl: "app-editor.css",
 })
 export class AppEditor implements ComponentInterface {
-  editorEl: HTMLEnjineerEditorElement;
+  editorEl: any;
   editorJs: any;
   headerEl: HTMLAppHeaderElement;
   skipRender = false;
@@ -164,7 +164,7 @@ export class AppEditor implements ComponentInterface {
         )}
       </app-header>,
       <ion-content class="ion-padding">
-        <enjineer-editor
+        <enjin-editor
           ref={(el) => (this.editorEl = el)}
           userId={this.session?.uid}
         />
