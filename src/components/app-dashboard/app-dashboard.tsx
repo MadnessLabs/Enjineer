@@ -86,8 +86,7 @@ export class AppDashboard implements ComponentInterface {
 
   render() {
     return [
-      <app-header pageTitle="Your Dashboard"></app-header>,
-      <ion-content class="ion-padding">
+      <ion-content>
         <canvas
           touch-action="none"
           id="board"
