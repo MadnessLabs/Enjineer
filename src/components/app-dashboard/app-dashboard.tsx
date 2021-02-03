@@ -26,6 +26,17 @@ export class AppDashboard implements ComponentInterface {
 
   @State() session: firebase.default.User;
 
+  componentWillLoad() {
+    window.addEventListener(
+      "touchmove",
+      (ev) => {
+        ev.preventDefault();
+        ev.stopImmediatePropagation();
+      },
+      { passive: false }
+    );
+  }
+
   componentDidLoad() {
     if (Build.isBrowser) {
       this.session = this.auth.isLoggedIn();
