@@ -24,21 +24,21 @@
     "test.watch": "stencil test --spec --e2e --watch"
   },
   "dependencies": {
-    "@ionic-native/core": "^5.30.0",
-    "@ionic-native/facebook": "^5.30.0",
-    "@ionic-native/geolocation": "^5.30.0",
-    "@ionic-native/google-plus": "^5.30.0",
-    "@ionic-native/social-sharing": "^5.30.0",
-    "@ionic-native/twitter-connect": "^5.30.0",
-    "@ionic/core": "^5.5.2",
-    "@madnesslabs/enjin-editor": "^1.0.4",
+    "@ionic-native/core": "^5.31.1",
+    "@ionic-native/facebook": "^5.31.1",
+    "@ionic-native/geolocation": "^5.31.1",
+    "@ionic-native/google-plus": "^5.31.1",
+    "@ionic-native/social-sharing": "^5.31.1",
+    "@ionic-native/twitter-connect": "^5.31.1",
+    "@ionic/core": "^5.5.3",
+    "@madnesslabs/enjin-editor": "^1.0.11",
     "debounce-decorator": "^1.0.6",
-    "firebase": "^8.2.0"
+    "firebase": "^8.2.5"
   },
   "devDependencies": {
-    "@madnesslabs/fireenjin": "^1.4.0",
-    "@stencil/core": "^2.3.0",
-    "firebase-tools": "^8.19.0",
+    "@madnesslabs/fireenjin": "^1.4.14",
+    "@stencil/core": "^2.4.0",
+    "firebase-tools": "^8.20.0",
     "typescript": "^3.9.7",
     "workbox-build": "^4.3.1"
   }
