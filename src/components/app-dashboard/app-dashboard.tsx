@@ -19,12 +19,13 @@ import debounce from "../../helpers/debounce";
   styleUrl: "app-dashboard.css",
 })
 export class AppDashboard implements ComponentInterface {
-  pointer: any = {};
-
   @Prop() auth: AuthService;
   @Prop() db: DatabaseService;
 
   @State() session: firebase.default.User;
+  @State() colorInputEl: HTMLInputElement;
+  @State() pointer: any = {};
+  @State() pen: Pen;
 
   componentWillLoad() {
     window.addEventListener(
@@ -42,29 +43,32 @@ export class AppDashboard implements ComponentInterface {
       this.session = this.auth.isLoggedIn();
       // Initialise application
       const board = new Board("board");
-      const pen = new Pen(board.ctx);
+      this.pen = new Pen(board.ctx);
       const floatingButton = new FloatingButton();
       floatingButton.onClick = board.clearMemory.bind(board);
       this.pointer.onEmpty = debounce(board.storeMemory.bind(board), 1500);
 
       // Attach event listener
-      var pointerDown = function pointerDown(e) {
+      var pointerDown = (e) => {
         // Initialise pointer
         this.pointer = new Pointer(e.pointerId);
         this.pointer.set(board.getPointerPos(e));
 
         // Get function type
-        pen.setFuncType(e);
-        if (pen.funcType === pen.funcTypes.menu) board.clearMemory();
-        else drawOnCanvas(e, this.pointer, pen);
+        this.pen.setFuncType(e);
+        if (this.pen.funcType === this.pen.funcTypes.menu) board.clearMemory();
+        else drawOnCanvas(e, this.pointer, this.pen);
       };
-      var pointerMove = function pointerMove(e) {
-        if (pen.funcType && pen.funcType.indexOf(pen.funcTypes.draw) !== -1) {
-          var pointer = this.pointer.get(e.pointerId);
-          drawOnCanvas(e, pointer, pen);
+      var pointerMove = (e) => {
+        if (
+          this.pen.funcType &&
+          this.pen.funcType.indexOf(this.pen.funcTypes.draw) !== -1
+        ) {
+          drawOnCanvas(e, this.pointer.get(e.pointerId), this.pen);
         }
       };
-      var pointerCancel = function pointerLeave(e) {
+      var pointerCancel = (e) => {
+        if (!this.pointer?.destruct) return;
         this.pointer.destruct(e.pointerId);
       };
       board.dom.addEventListener("pointerdown", pointerDown);
@@ -109,6 +113,22 @@ export class AppDashboard implements ComponentInterface {
       >
         Opps, you cannot play draw N guess with this browser!
       </canvas>,
+      <input
+        type="color"
+        ref={(el) => (this.colorInputEl = el)}
+        style={{
+          pointerEvents: "all",
+          zIndex: "999",
+          position: "absolute",
+          bottom: "30px",
+          right: "30px",
+        }}
+        value={"#555555"}
+        onChange={() => {
+          if (!this.pen || !this.colorInputEl?.value) return;
+          this.pen.color = this.colorInputEl.value;
+        }}
+      />,
     ];
   }
 }

@@ -1,7 +1,6 @@
 export default class Pen {
   colors = {
-    fg: "#555",
-    bg: "#FFF",
+    bg: "#FFFFFF",
   };
   lineWidth = 4;
   type = "mouse";
@@ -12,7 +11,7 @@ export default class Pen {
     erase: "draw erase",
     menu: "menu",
   };
-  color: string;
+  color = "#555555";
 
   constructor(context) {
     context.lineJoin = this.lineJoin;
@@ -45,7 +44,7 @@ export default class Pen {
       }
       case this.funcTypes.draw: {
         this.set(context, {
-          color: this.colors.fg,
+          color: this.color,
           lineWidth: this.getLineWidth(pointerEvent),
         });
         break;
