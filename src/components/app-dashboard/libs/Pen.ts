@@ -12,17 +12,20 @@ export default class Pen {
     menu: "menu",
   };
   color = "#555555";
+  opacity = 1;
 
   constructor(context) {
     context.lineJoin = this.lineJoin;
     context.lineWidth = this.lineWidth;
     context.strokeStyle = this.color;
+    context.globalAlpha = this.opacity;
   }
 
   set(context, config) {
     context.lineWidth = config.lineWidth;
     context.strokeStyle = config.color;
     context.lineJoin = this.lineJoin;
+    context.globalAlpha = this.opacity;
   }
 
   setFuncType(pointerEvent) {

@@ -23,12 +23,11 @@ export class AppDashboard implements ComponentInterface {
   @Prop() db: DatabaseService;
 
   @State() session: firebase.default.User;
-  @State() colorInputEl: HTMLInputElement;
-  @State() lineWidthEl: HTMLInputElement;
   @State() pointer: any = {};
   @State() pen: Pen;
   @State() showBrushSize = true;
   @State() showColor = true;
+  @State() showOpacity = true;
 
   componentWillLoad() {
     window.addEventListener(
@@ -117,40 +116,55 @@ export class AppDashboard implements ComponentInterface {
         Opps, you cannot play draw N guess with this browser!
       </canvas>,
       <input
-        ref={(el) => (this.lineWidthEl = el)}
         type="range"
         name="lineWidth"
-        min={0.25}
-        max={20}
+        min={1}
+        max={50}
         value={1}
-        step={0.25}
         style={{
           zIndex: "999",
           position: "absolute",
-          bottom: "30px",
+          bottom: "40px",
           right: "80px",
           display: this.showBrushSize ? "block" : "none",
         }}
-        onChange={() => {
-          if (!this.pen || !this.colorInputEl?.value) return;
-          this.pen.lineWidth = parseInt(this.lineWidthEl.value);
+        onChange={(event: any) => {
+          if (!this.pen || !event.target?.value) return;
+          this.pen.lineWidth = parseInt(event.target.value);
+        }}
+      />,
+      <input
+        type="range"
+        name="opacity"
+        min={1}
+        max={100}
+        value={100}
+        style={{
+          zIndex: "999",
+          position: "absolute",
+          bottom: "10px",
+          right: "80px",
+          display: this.showOpacity ? "block" : "none",
+        }}
+        onChange={(event: any) => {
+          if (!this.pen || !event.target?.value) return;
+          this.pen.opacity = parseInt(event.target.value) / 100;
         }}
       />,
       <input
         type="color"
-        ref={(el) => (this.colorInputEl = el)}
         style={{
           pointerEvents: "all",
           zIndex: "999",
           position: "absolute",
-          bottom: "30px",
+          bottom: "20px",
           right: "30px",
           display: this.showColor ? "block" : "none",
         }}
         value={"#555555"}
-        onChange={() => {
-          if (!this.pen || !this.colorInputEl?.value) return;
-          this.pen.color = this.colorInputEl.value;
+        onChange={(event: any) => {
+          if (!this.pen || !event.target?.value) return;
+          this.pen.color = event.target.value;
         }}
       />,
     ];
