@@ -2,7 +2,7 @@ export default class Pen {
   colors = {
     bg: "#FFFFFF",
   };
-  lineWidth = 4;
+  lineWidth = 1;
   type = "mouse";
   lineJoin = "round";
   funcType = null;
@@ -60,15 +60,15 @@ export default class Pen {
     switch (e.pointerType) {
       case "touch": {
         if (e.width < 10 && e.height < 10) {
-          return (e.width + e.height) * 2 + 10;
+          return ((e.width + e.height) * 2 + 10) * this.lineWidth;
         } else {
-          return (e.width + e.height - 40) / 2;
+          return ((e.width + e.height - 40) / 2) * this.lineWidth;
         }
       }
       case "pen":
-        return e.pressure * 8;
+        return e.pressure * 8 * this.lineWidth;
       default:
-        return e.pressure ? e.pressure * 8 : 4;
+        return (e.pressure ? e.pressure * 8 : 4) * this.lineWidth;
     }
   }
 

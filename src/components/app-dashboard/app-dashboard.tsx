@@ -24,8 +24,11 @@ export class AppDashboard implements ComponentInterface {
 
   @State() session: firebase.default.User;
   @State() colorInputEl: HTMLInputElement;
+  @State() lineWidthEl: HTMLInputElement;
   @State() pointer: any = {};
   @State() pen: Pen;
+  @State() showBrushSize = true;
+  @State() showColor = true;
 
   componentWillLoad() {
     window.addEventListener(
@@ -114,6 +117,26 @@ export class AppDashboard implements ComponentInterface {
         Opps, you cannot play draw N guess with this browser!
       </canvas>,
       <input
+        ref={(el) => (this.lineWidthEl = el)}
+        type="range"
+        name="lineWidth"
+        min={0.25}
+        max={20}
+        value={1}
+        step={0.25}
+        style={{
+          zIndex: "999",
+          position: "absolute",
+          bottom: "30px",
+          right: "80px",
+          display: this.showBrushSize ? "block" : "none",
+        }}
+        onChange={() => {
+          if (!this.pen || !this.colorInputEl?.value) return;
+          this.pen.lineWidth = parseInt(this.lineWidthEl.value);
+        }}
+      />,
+      <input
         type="color"
         ref={(el) => (this.colorInputEl = el)}
         style={{
@@ -122,6 +145,7 @@ export class AppDashboard implements ComponentInterface {
           position: "absolute",
           bottom: "30px",
           right: "30px",
+          display: this.showColor ? "block" : "none",
         }}
         value={"#555555"}
         onChange={() => {
