@@ -34,6 +34,7 @@ export class AppRoot implements ComponentInterface {
     config: this.config,
     db: this.db,
   };
+  pages: any[] = [];
 
   @Listen("onDidDismiss", { target: "body" })
   onMenuDismiss() {
@@ -55,6 +56,7 @@ export class AppRoot implements ComponentInterface {
         config: this.config,
         selectingPage: !!event.detail?.selectingPage,
         blockIndex: event?.detail?.blockIndex,
+        pages: this.pages,
       },
       event: event.detail.event,
     });
@@ -77,14 +79,30 @@ export class AppRoot implements ComponentInterface {
     return true;
   }
 
+  async fetchPages(
+    collectionRef: firebase.default.firestore.CollectionReference
+  ) {
+    const pages = [];
+    const collection = await collectionRef.get();
+    for (const doc of collection.docs) {
+      pages.push({
+        id: doc.id,
+        ...doc.data(),
+        pages: await this.fetchPages(doc.ref.collection("pages")),
+      });
+    }
+
+    return pages;
+  }
+
   async componentWillLoad() {
     if (Build.isBrowser) {
       this.session = this.auth.isLoggedIn();
       this.auth.onAuthChanged((session: firebase.default.User) => {
         if (session && session.uid) {
           this.session = session;
-          this.db.watchDocument("users", session.uid, async (snapshot) => {
-            if (!snapshot?.data) {
+          this.db.watchDocument("users", session.uid, async ({ doc, data }) => {
+            if (!data) {
               await this.db.document("users", session.uid).set({
                 id: session.uid,
                 isRegistered: true,
@@ -94,6 +112,8 @@ export class AppRoot implements ComponentInterface {
                 phone: session.phoneNumber,
               });
             }
+            this.pages = await this.fetchPages(doc.ref.collection("pages"));
+            console.log(this.pages);
           });
         }
       });

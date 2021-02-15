@@ -8,6 +8,7 @@ import { DatabaseService } from "../../helpers/database";
 })
 export class AppMenu {
   timestamp = new Date();
+  level = 1;
 
   @Event() enjinToggleMenu: EventEmitter;
   @Event() enjinSelectPage: EventEmitter;
@@ -17,8 +18,9 @@ export class AppMenu {
   @Prop() config: any;
   @Prop() selectingPage = false;
   @Prop() blockIndex: number;
+  @Prop() pages: any[] = [];
 
-  @State() pages: any[] = [];
+  @State() expandedPages = [];
 
   async addPage(event) {
     const session = this.auth?.isLoggedIn();
@@ -32,7 +34,6 @@ export class AppMenu {
         }/${this.timestamp.getDate()}`,
         users: [this.auth.isLoggedIn().uid],
       });
-    await this.fetchPages();
     this.enjinToggleMenu.emit({ event });
     if (this.selectingPage) {
       this.enjinSelectPage.emit({
@@ -59,18 +60,47 @@ export class AppMenu {
     this.enjinToggleMenu.emit({ event });
   }
 
-  async fetchPages() {
-    const session = this.auth?.isLoggedIn();
-    if (!session) return;
-    this.pages = (
-      await this.db.document("users", session.uid).collection("pages").get()
-    ).docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
-    return this.pages;
-  }
-
-  componentDidLoad() {
-    this.fetchPages();
+  renderPageItem(page) {
+    return [
+      <ion-item
+        href={this.selectingPage ? "#" : `/editor/${page.id}`}
+        detail
+        onClick={(event) => this.itemClick(event, page)}
+      >
+        {page.pages?.length ? (
+          <ion-icon
+            slot="start"
+            name={
+              this.expandedPages.includes(page.id)
+                ? "caret-up-circle-outline"
+                : "caret-down-circle-outline"
+            }
+            style={{ marginRight: "5px" }}
+            onClick={(event) => {
+              event.preventDefault();
+              event.stopPropagation();
+              if (this.expandedPages.includes(page.id)) {
+                delete this.expandedPages[this.expandedPages.indexOf(page.id)];
+              } else {
+                this.expandedPages.push(page.id);
+              }
+              this.expandedPages = [...this.expandedPages];
+            }}
+          />
+        ) : null}
+        <ion-label>{page.name}</ion-label>
+      </ion-item>,
+      page.pages?.length > 0 ? (
+        <ion-list
+          style={{
+            paddingLeft: "10px",
+            display: this.expandedPages.includes(page.id) ? "block" : "none",
+          }}
+        >
+          {page.pages.map((subPage) => this.renderPageItem(subPage))}
+        </ion-list>
+      ) : null,
+    ];
   }
 
   render() {
@@ -84,16 +114,7 @@ export class AppMenu {
           <ion-icon slot="start" name="home" />
           <ion-label>Home</ion-label>
         </ion-item>
-        {this.pages.map((page) => (
-          <ion-item
-            href={this.selectingPage ? "#" : `/editor/${page.id}`}
-            detail
-            onClick={(event) => this.itemClick(event, page)}
-          >
-            <ion-icon name="document" slot="start" />
-            <ion-label>{page.name}</ion-label>
-          </ion-item>
-        ))}
+        {this.pages.map((page) => this.renderPageItem(page))}
         <ion-item
           href="#"
           lines="none"

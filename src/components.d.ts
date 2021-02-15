@@ -31,6 +31,7 @@ export namespace Components {
         "blockIndex": number;
         "config": any;
         "db": DatabaseService;
+        "pages": any[];
         "selectingPage": boolean;
     }
     interface AppProfile {
@@ -121,6 +122,7 @@ declare namespace LocalJSX {
         "db"?: DatabaseService;
         "onEnjinSelectPage"?: (event: CustomEvent<any>) => void;
         "onEnjinToggleMenu"?: (event: CustomEvent<any>) => void;
+        "pages"?: any[];
         "selectingPage"?: boolean;
     }
     interface AppProfile {

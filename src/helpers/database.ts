@@ -12,7 +12,7 @@ export class DatabaseService {
       .then(() => {
         console.log("Offline data enabled!");
       })
-      .catch(error => {
+      .catch((error) => {
         console.log(error.message);
       });
   }
@@ -21,7 +21,7 @@ export class DatabaseService {
     const collection = await this.get(collectionName);
     const data = {};
 
-    await collection.forEach(doc => {
+    await collection.forEach((doc) => {
       data[doc.id] = doc.data();
     });
 
@@ -39,7 +39,7 @@ export class DatabaseService {
     const data = [];
 
     if (options && options.orderBy) {
-      options.orderBy.map(order => {
+      options.orderBy.map((order) => {
         const isNegative: boolean = order.charAt(0) === "-";
         collectionRef = collectionRef.orderBy(
           isNegative ? order.substr(1) : order,
@@ -53,7 +53,7 @@ export class DatabaseService {
 
     const collection = await collectionRef.get();
 
-    await collection.forEach(doc => {
+    await collection.forEach((doc) => {
       data.push({ ...doc.data(), id: doc.id });
     });
 
@@ -109,9 +109,9 @@ export class DatabaseService {
     this.watchers[`${collectionName}:${id}`] = this.document(
       collectionName,
       id
-    ).onSnapshot(async doc => {
+    ).onSnapshot(async (doc) => {
       if (callback && typeof callback === "function") {
-        callback({ data: doc.data() });
+        callback({ doc, data: doc.data() });
       }
     });
   }
