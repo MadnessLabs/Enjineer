@@ -60,10 +60,21 @@ export class AppMenu {
     this.enjinToggleMenu.emit({ event });
   }
 
+  pathToHref(path: string) {
+    const session = this.auth.isLoggedIn();
+    return (
+      `/editor/` +
+      path
+        .split("/")
+        .filter((part) => !["users", "pages", session.uid].includes(part))
+        .join(":")
+    );
+  }
+
   renderPageItem(page) {
     return [
       <ion-item
-        href={this.selectingPage ? "#" : `/editor/${page.id}`}
+        href={this.selectingPage ? "#" : this.pathToHref(page.ref.path)}
         detail
         onClick={(event) => this.itemClick(event, page)}
       >

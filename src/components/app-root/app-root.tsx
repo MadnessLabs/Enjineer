@@ -86,6 +86,7 @@ export class AppRoot implements ComponentInterface {
     const collection = await collectionRef.get();
     for (const doc of collection.docs) {
       pages.push({
+        ref: doc.ref,
         id: doc.id,
         ...doc.data(),
         pages: await this.fetchPages(doc.ref.collection("pages")),
@@ -113,7 +114,6 @@ export class AppRoot implements ComponentInterface {
               });
             }
             this.pages = await this.fetchPages(doc.ref.collection("pages"));
-            console.log(this.pages);
           });
         }
       });

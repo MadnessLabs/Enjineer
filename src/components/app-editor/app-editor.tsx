@@ -42,14 +42,21 @@ export class AppEditor implements ComponentInterface {
       event?.detail?.event?.target?.textContent &&
       this.session?.uid
     ) {
-      await this.db
-        .collection("users")
-        .doc(this.session.uid)
-        .collection("pages")
-        .doc(this.pageId)
-        .update({
-          name: event.detail.event.target.textContent,
-        });
+      let docRef = this.db.collection("users").doc(this.session.uid);
+      if (this.pageId !== "home") {
+        if (this.pageId.includes(":")) {
+          const pageIds = this.pageId.split(":");
+          for (const pageId of pageIds) {
+            docRef = docRef.collection("pages").doc(pageId);
+          }
+        } else {
+          docRef = docRef.collection("pages").doc(this.pageId);
+        }
+      }
+
+      await docRef.update({
+        name: event.detail.event.target.textContent,
+      });
     }
   }
 
@@ -64,14 +71,18 @@ export class AppEditor implements ComponentInterface {
         editor,
       });
     } else {
-      await this.db
-        .collection("users")
-        .doc(this.session.uid)
-        .collection("pages")
-        .doc(this.pageId)
-        .update({
-          editor,
-        });
+      let docRef = this.db.collection("users").doc(this.session.uid);
+      if (this.pageId.includes(":")) {
+        const pageIds = this.pageId.split(":");
+        for (const pageId of pageIds) {
+          docRef = docRef.collection("pages").doc(pageId);
+        }
+      } else {
+        docRef = docRef.collection("pages").doc(this.pageId);
+      }
+      await docRef.update({
+        editor,
+      });
     }
   }
 
@@ -82,7 +93,7 @@ export class AppEditor implements ComponentInterface {
 
   async fetchPage(page?: any) {
     this.page = page ? page : (await this.pageRef.get()).data();
-    this.editorJs.blocks.render(this.page.editor ? this.page.editor : {});
+    this.editorJs.blocks.render(this.page?.editor ? this.page.editor : {});
   }
 
   async componentDidLoad() {
@@ -90,14 +101,17 @@ export class AppEditor implements ComponentInterface {
     if (this.session) {
       setTimeout(async () => {
         this.editorJs = await this.editorEl.getInstance();
-        this.pageRef =
-          this.pageId === "home" && this.editorJs?.blocks?.render
-            ? this.db.collection("users").doc(this.session.uid)
-            : this.db
-                .collection("users")
-                .doc(this.session.uid)
-                .collection("pages")
-                .doc(this.pageId);
+        this.pageRef = this.db.collection("users").doc(this.session.uid);
+        if (this.pageId !== "home") {
+          if (this.pageId.includes(":")) {
+            const pageIds = this.pageId.split(":");
+            for (const pageId of pageIds) {
+              this.pageRef = this.pageRef.collection("pages").doc(pageId);
+            }
+          } else if (this.pageId && !this.pageId.includes(":")) {
+            this.pageRef = this.pageRef.collection("pages").doc(this.pageId);
+          }
+        }
         await this.fetchPage();
         this.pageSubscription = this.pageRef.onSnapshot(async (doc) => {
           if (
