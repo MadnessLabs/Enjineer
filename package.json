@@ -30,16 +30,16 @@
     "@ionic-native/google-plus": "^5.31.1",
     "@ionic-native/social-sharing": "^5.31.1",
     "@ionic-native/twitter-connect": "^5.31.1",
-    "@ionic/core": "^5.5.3",
-    "@madnesslabs/enjin-editor": "^1.0.11",
+    "@ionic/core": "^5.6.0",
+    "@madnesslabs/enjin-editor": "^1.0.12",
     "debounce-decorator": "^1.0.6",
-    "firebase": "^8.2.5"
+    "firebase": "^8.2.10"
   },
   "devDependencies": {
     "@madnesslabs/fireenjin": "^1.4.14",
     "@stencil/core": "^2.4.0",
     "firebase-tools": "^8.20.0",
-    "typescript": "^3.9.7",
+    "typescript": "^3.9.9",
     "workbox-build": "^4.3.1"
   }
 }
